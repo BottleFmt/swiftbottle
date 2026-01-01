@@ -1,6 +1,6 @@
 # SwiftBottle
 
-Swift implementation of the Bottle protocol ([IETF draft-karpeles-bottle-idcard-01](https://datatracker.ietf.org/doc/draft-karpeles-bottle-idcard/)), providing a unified secure message container format.
+Swift implementation of the Bottle protocol ([draft-karpeles-bottle-idcard-01](https://github.com/BottleFmt/bottle-id)), providing a unified secure message container format.
 
 ## Features
 
@@ -231,4 +231,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 - [gobottle](https://github.com/BottleFmt/gobottle) - Go implementation
 - [pybottle](https://github.com/BottleFmt/pybottle) - Python implementation
-- [IETF Draft](https://datatracker.ietf.org/doc/draft-karpeles-bottle-idcard/) - Protocol specification
+- [bottle-id](https://github.com/BottleFmt/bottle-id) - Protocol specification (IETF draft)
