@@ -168,6 +168,171 @@ final class InteropTests: XCTestCase {
         XCTAssertNoThrow(try idcard.testKeyPurpose(daniel.publicKey, "sign"))
         XCTAssertNoThrow(try idcard.testKeyPurpose(daniel.publicKey, "decrypt"))
     }
+
+    // MARK: - CBOR Edge Case Tests
+
+    func testEmptyMessage() throws {
+        let alice = try TestKeys.getAlice()
+
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.emptyMessageCleartext)
+
+        XCTAssertEqual(data.count, 0)
+        XCTAssertTrue(result.signedBy(alice.publicKey))
+    }
+
+    func testUnsignedCleartext() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.unsignedCleartext)
+
+        XCTAssertEqual(String(data: data, encoding: .utf8), "Unsigned message")
+        XCTAssertEqual(result.signatures.count, 0)
+    }
+
+    func testCborNullPayload() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.cborNullPayload)
+
+        // CBOR null is encoded as 0xf6 (single byte)
+        XCTAssertEqual(data, Data([0xf6]))
+        XCTAssertEqual(result.signatures.count, 0)
+    }
+
+    func testCborEmptyArrayPayload() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.cborEmptyArrayPayload)
+
+        // CBOR empty array is encoded as 0x80
+        XCTAssertEqual(data, Data([0x80]))
+        XCTAssertEqual(result.signatures.count, 0)
+    }
+
+    func testCborEmptyMapPayload() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.cborEmptyMapPayload)
+
+        // CBOR empty map is encoded as 0xa0
+        XCTAssertEqual(data, Data([0xa0]))
+        XCTAssertEqual(result.signatures.count, 0)
+    }
+
+    func testCborEmptyStringPayload() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.cborEmptyStringPayload)
+
+        // CBOR empty text string is encoded as 0x60
+        XCTAssertEqual(data, Data([0x60]))
+        XCTAssertEqual(result.signatures.count, 0)
+    }
+
+    func testSignedEmptyHeader() throws {
+        let alice = try TestKeys.getAlice()
+
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.signedEmptyHeader)
+
+        XCTAssertEqual(String(data: data, encoding: .utf8), "Message with empty header")
+        XCTAssertTrue(result.signedBy(alice.publicKey))
+    }
+
+    func testSingleRecipientEncrypted() throws {
+        let alice = try TestKeys.getAlice()
+        let bob = try TestKeys.getBob()
+
+        let opener = newOpener(bob)
+        let (data, result) = try opener.openCBOR(TestVectors.singleRecipientEncrypted)
+
+        XCTAssertEqual(String(data: data, encoding: .utf8), "Single recipient test")
+        XCTAssertTrue(result.signedBy(alice.publicKey))
+        XCTAssertEqual(result.decryptionCount, 1)
+    }
+
+    func testEd25519SignedEmptyRecipients() throws {
+        let chloe = try TestKeys.getChloe()
+
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.ed25519SignedEmptyRecipients)
+
+        XCTAssertEqual(String(data: data, encoding: .utf8), "Ed25519 signed, no recipients")
+        XCTAssertTrue(result.signedBy(chloe.publicKey))
+        XCTAssertEqual(result.decryptionCount, 0)
+    }
+
+    func testCborNestedPayload() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.cborNestedPayload)
+
+        // Verify it's valid CBOR and can be parsed
+        XCTAssertGreaterThan(data.count, 0)
+        XCTAssertEqual(result.signatures.count, 0)
+    }
+
+    func testHeaderWithVariousTypes() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.headerWithVariousTypes)
+
+        XCTAssertEqual(String(data: data, encoding: .utf8), "Test message")
+        XCTAssertEqual(result.signatures.count, 0)
+    }
+
+    func testCborIntegerBoundaries() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.cborIntegerBoundaries)
+
+        // Verify we got CBOR data back
+        XCTAssertGreaterThan(data.count, 0)
+        XCTAssertEqual(result.signatures.count, 0)
+    }
+
+    func testCborBinary24Bytes() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.cborBinary24Bytes)
+
+        // The payload contains a 24-byte binary "ABCDEFGHIJKLMNOPQRSTUVWX"
+        XCTAssertGreaterThan(data.count, 0)
+        XCTAssertEqual(result.signatures.count, 0)
+    }
+
+    func testCborBinary256Bytes() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.cborBinary256Bytes)
+
+        // The payload contains a 256-byte binary
+        XCTAssertGreaterThan(data.count, 0)
+        XCTAssertEqual(result.signatures.count, 0)
+    }
+
+    func testCborArray24Elements() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.cborArray24Elements)
+
+        // The payload is an array of 24 integers (0-23)
+        XCTAssertGreaterThan(data.count, 0)
+        XCTAssertEqual(result.signatures.count, 0)
+    }
+
+    func testCborIntegerKeyMap() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.cborIntegerKeyMap)
+
+        // The payload is a map with integer keys
+        XCTAssertGreaterThan(data.count, 0)
+        XCTAssertEqual(result.signatures.count, 0)
+    }
+
+    func testSignedBinaryContent() throws {
+        let alice = try TestKeys.getAlice()
+
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.signedBinaryContent)
+
+        // Expect bytes 0x00-0x1f (32 bytes)
+        XCTAssertEqual(data.count, 32)
+        for i in 0..<32 {
+            XCTAssertEqual(data[i], UInt8(i))
+        }
+        XCTAssertTrue(result.signedBy(alice.publicKey))
+    }
+
+    func testCborNegativeIntegers() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.cborNegativeIntegers)
+
+        // The payload contains negative integers
+        XCTAssertGreaterThan(data.count, 0)
+        XCTAssertEqual(result.signatures.count, 0)
+    }
+
+    func testLargeHeaderKey() throws {
+        let (data, result) = try emptyOpener.openCBOR(TestVectors.largeHeaderKey)
+
+        // CBOR null payload (0xf6)
+        XCTAssertEqual(data, Data([0xf6]))
+        XCTAssertEqual(result.signatures.count, 0)
+    }
 }
 
 /// Basic bottle functionality tests

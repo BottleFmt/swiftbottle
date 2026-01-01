@@ -84,4 +84,63 @@ enum TestVectors {
     static let chloeIDCard = Data(base64Encoded: "haBYn4WhYmN0ZmlkY2FyZFiOpgFYLDAqMAUGAytlcAMhAEy+j47jx0kyBtlF5iXxDLyREkqe8y6k53AQXOBJRPw+AhppPoUDA4GjAVgsMCowBQYDK2VwAyEATL6PjuPHSTIG2UXmJfEMvJESSp7zLqTncBBc4ElE/D4CGmk+hQMEgmdkZWNyeXB0ZHNpZ24E9gX2BqFkbmFtZWVDaGxvZQD29gH2gYMAWCwwKjAFBgMrZXADIQBMvo+O48dJMgbZReYl8Qy8kRJKnvMupOdwEFzgSUT8PlhAzjf6zY5rD2kD0/12qFbscTK6Ib6OsssCoZaIyNpDOKFGLMTiMGHS3k+Ha9bHGcBo/DuoSWuDrxj/WThyRx0YBA==")!
 
     static let danielIDCard = Data(base64Encoded: "haBYoIWhYmN0ZmlkY2FyZFiPpgFYLDAqMAUGAytlcAMhAPZVf8q8vlzLzBqsIVEF3n/txTowBg+DI/4MaCTd1/u/AhppPoUDA4GjAVgsMCowBQYDK2VwAyEA9lV/yry+XMvMGqwhUQXef+3FOjAGD4Mj/gxoJN3X+78CGmk+hQMEgmdkZWNyeXB0ZHNpZ24E9gX2BqFkbmFtZWZEYW5pZWwA9vYB9oGDAFgsMCowBQYDK2VwAyEA9lV/yry+XMvMGqwhUQXef+3FOjAGD4Mj/gxoJN3X+79YQH4yeA5Oluwr9Av5EjDcMBo11ax2eNKVtDvLK37V4DCMr6rF4y41oRXiud9sr4Lwg0AGeW+OE9S14N5Emzj4GQQ=")!
+
+    // MARK: - CBOR Edge Case Test Vectors
+
+    /// Cleartext with empty message body, signed by Alice
+    static let emptyMessageCleartext = Data(base64Encoded: "haBAAPaBgwBYWzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABNPaCIIUw55br7b9PjSjIU0tp3wt080eA1p2Su3M8xT2Uh+myTeaDGQqeV+6XyOAWyMk1bRnkSoOhk6c83xPimBYRzBFAiB3/DuOTDB0laYp/j1MxHGdMaN5NUNQmjQEbdd6yo+iAQIhAOsLYnlcv3wvuhdIT+e5P4746a0sl6LIl8gOOwKq1Iz3")!
+
+    /// Cleartext unsigned (no signatures at all - empty array)
+    static let unsignedCleartext = Data(base64Encoded: "haBQVW5zaWduZWQgbWVzc2FnZQD29g==")!
+
+    /// Cleartext with CBOR content type and null payload
+    static let cborNullPayload = Data(base64Encoded: "haFiY3RkY2JvckH2APb2")!
+
+    /// Cleartext with CBOR content type and empty array payload
+    static let cborEmptyArrayPayload = Data(base64Encoded: "haFiY3RkY2JvckGAAPb2")!
+
+    /// Cleartext with CBOR content type and empty map payload
+    static let cborEmptyMapPayload = Data(base64Encoded: "haFiY3RkY2JvckGgAPb2")!
+
+    /// Cleartext with CBOR content type and empty string payload
+    static let cborEmptyStringPayload = Data(base64Encoded: "haFiY3RkY2JvckFgAPb2")!
+
+    /// Signed message with empty header map (explicit empty map)
+    static let signedEmptyHeader = Data(base64Encoded: "haBYGU1lc3NhZ2Ugd2l0aCBlbXB0eSBoZWFkZXIA9oGDAFhbMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE09oIghTDnluvtv0+NKMhTS2nfC3TzR4DWnZK7czzFPZSH6bJN5oMZCp5X7pfI4BbIyTVtGeRKg6GTpzzfE+KYFhHMEUCIQDoHGQacPXpYkm05HM8sz0j0R+kxcahn8CrcneHb1kBXQIgHLaK9FhXVId9yPmvl1NF0K7yoOg9ypGvwJatsGHu0w8=")!
+
+    /// Encrypted to single recipient (edge case: single-element array)
+    static let singleRecipientEncrypted = Data(base64Encoded: "haBZATiFoFg35zn2kpVD2fzY6Hp01M2l9cnpNFqelDbVGWP7LohxLN0y9ppOqN70a5DMi9IeL1ul4nLPXeTWIAKBgwBYWzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABIoEQn7veaBj/RTUi1qMYYQgxJoMWBvLTMJRSLcwLlelv38NDoNgTRt8nNKjm/nBCY0ClkSPYv5tRVHPe2o2k65YmQBbMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEku5qDv009WoDMMUzCNwSjfqtuEcZHtB+O79Eb3zKnKDoSffmYYwFQsCrlvPOKTXNuUDT13fjCZfXoNJ59KvtHCdjQqa0fyTtAKOfnwF/SM6xBEw4uPM8n4jYcCV5WaOqwxDgd1Nz59Nsl/uRwqepUchsOpQCXf+V+aM3ivYB9oGDAFhbMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE09oIghTDnluvtv0+NKMhTS2nfC3TzR4DWnZK7czzFPZSH6bJN5oMZCp5X7pfI4BbIyTVtGeRKg6GTpzzfE+KYFhHMEUCIF17mhvDS+JP/WJpxiBPNxodv3WK9rYdd5em61+mXqeIAiEAymnspZkwsWyLcKbwsA4fkscnOOuKU8lQ/U2sofCAVHk=")!
+
+    /// Ed25519 signed with explicit empty recipients array
+    static let ed25519SignedEmptyRecipients = Data(base64Encoded: "haBYHUVkMjU1MTkgc2lnbmVkLCBubyByZWNpcGllbnRzAPaBgwBYLDAqMAUGAytlcAMhAEy+j47jx0kyBtlF5iXxDLyREkqe8y6k53AQXOBJRPw+WEDO8suEMsxKYNtVAZtf9hqfmKpvjJV+fvcUoprVd65j1yB+qwxKCEGlH8t5ExP2NADKIw2rGc5CdCMYeFg5KE0I")!
+
+    /// CBOR payload with nested structure (tests deep encoding)
+    static let cborNestedPayload = Data(base64Encoded: "haFiY3RkY2JvcleBomFhAWFipWFjAmFkA2FlBGFmBWFnBgD29g==")!
+
+    /// Bottle with header containing various CBOR types
+    static let headerWithVariousTypes = Data(base64Encoded: "haViY3RkanNvbmNpbnQYKmRib29s9WRudWxs9mZzdHJpbmdqaGVsbG8gdGVzdExUZXN0IG1lc3NhZ2UA9vY=")!
+
+    /// CBOR payload with integers at encoding boundaries
+    static let cborIntegerBoundaries = Data(base64Encoded: "haFiY3RkY2JvclWJoBcYGBgYGP8ZAQAZ//8aAAEAAPYA9vY=")!
+
+    /// CBOR payload with a 24-byte binary (tests 1-byte length encoding boundary)
+    static let cborBinary24Bytes = Data(base64Encoded: "haFiY3RkY2JvclgaWBhBQkNERUZHSElKS0xNTk9QUVJTVFVWV1gA9vY=")!
+
+    /// CBOR payload with a 256-byte binary (tests 2-byte length encoding)
+    static let cborBinary256Bytes = Data(base64Encoded: "haFiY3RkY2JvclkBA1kBAEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWmFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVphYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ekFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWmFiY2RlZmdoaWprbG1ub3BxcnN0dXYA9vY=")!
+
+    /// CBOR payload with array of 24 elements (tests array length encoding boundary)
+    static let cborArray24Elements = Data(base64Encoded: "haFiY3RkY2JvclgamBgAAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcA9vY=")!
+
+    /// CBOR payload with definite-length map with integer keys
+    static let cborIntegerKeyMap = Data(base64Encoded: "haFiY3RkY2Jvck6lGQEBBQABAQICAzgkBAD29g==")!
+
+    /// Signed bottle with binary message content (not text)
+    static let signedBinaryContent = Data(base64Encoded: "haBYIAABAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZGhscHR4fAPaBgwBYWzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABNPaCIIUw55br7b9PjSjIU0tp3wt080eA1p2Su3M8xT2Uh+myTeaDGQqeV+6XyOAWyMk1bRnkSoOhk6c83xPimBYSDBGAiEA0tY/SQJvyj2vm02k8WDBK6tBU+rRKcDzSI2+FcSt030CIQD/pd2Rdbw4UrehHeiDgDP+znRJOyJTT4V/lgJyOconLA==")!
+
+    /// Unsigned bottle with CBOR payload containing negative integers
+    static let cborNegativeIntegers = Data(base64Encoded: "haFiY3RkY2Jvck6IICEiOCM4JDhnOP84/wD29g==")!
+
+    /// Bottle with maximum allowed header string length (edge case)
+    static let largeHeaderKey = Data(base64Encoded: "haJiY3RkY2JvcnhAYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWV2YWx1ZUH2APb2")!
 }
