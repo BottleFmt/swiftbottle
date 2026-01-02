@@ -264,7 +264,7 @@ public func ed25519PublicToX25519(_ ed25519Key: Curve25519.Signing.PublicKey) th
 
     // Ed25519 public key is the y-coordinate with sign bit in MSB
     // Extract y as a field element
-    var y = bytesToFieldElement(yBytes)
+    let y = bytesToFieldElement(yBytes)
 
     // Compute u = (1 + y) / (1 - y) mod p
     var oneMinusY = fieldSubtract(fieldOne(), y)

@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '14.0'
   s.osx.deployment_target = '11.0'
   s.tvos.deployment_target = '14.0'
-  s.watchos.deployment_target = '7.0'
+  # watchOS not supported due to SwiftCBOR dependency
 
   s.swift_version = '5.5'
 

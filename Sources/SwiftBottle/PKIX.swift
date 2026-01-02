@@ -295,7 +295,7 @@ private func parseECPrivateKeySEC1(_ der: Data) throws -> PrivateKeyType {
     var offset = 1
 
     // Parse SEQUENCE length
-    let (seqLen, seqLenBytes) = parseASN1Length(Array(bytes.suffix(from: offset)))
+    let (_, seqLenBytes) = parseASN1Length(Array(bytes.suffix(from: offset)))
     offset += seqLenBytes
 
     // Parse version INTEGER (should be 1)
