@@ -333,6 +333,76 @@ final class InteropTests: XCTestCase {
         XCTAssertEqual(data, Data([0xf6]))
         XCTAssertEqual(result.signatures.count, 0)
     }
+
+    // MARK: - IDCard Edge Case Tests
+
+    func testIDCardMinimal() throws {
+        let alice = try TestKeys.getAlice()
+
+        let idcard = try IDCard.load(TestVectors.idcardMinimal)
+
+        // Verify it has no or empty Meta
+        XCTAssertTrue(idcard.meta.isEmpty)
+
+        // Verify SubKeys exist
+        XCTAssertGreaterThanOrEqual(idcard.subKeys.count, 1)
+
+        // Verify key purpose
+        XCTAssertNoThrow(try idcard.testKeyPurpose(alice.publicKey, "sign"))
+    }
+
+    func testIDCardEmptyMeta() throws {
+        let idcard = try IDCard.load(TestVectors.idcardEmptyMeta)
+
+        // Meta should be empty
+        XCTAssertTrue(idcard.meta.isEmpty)
+    }
+
+    func testIDCardMultipleKeys() throws {
+        let alice = try TestKeys.getAlice()
+        let bob = try TestKeys.getBob()
+
+        let idcard = try IDCard.load(TestVectors.idcardMultipleKeys)
+
+        // Verify we have 2 SubKeys
+        XCTAssertEqual(idcard.subKeys.count, 2)
+
+        // Verify Alice's key has sign purpose
+        XCTAssertNoThrow(try idcard.testKeyPurpose(alice.publicKey, "sign"))
+
+        // Verify Bob's key has decrypt purpose
+        XCTAssertNoThrow(try idcard.testKeyPurpose(bob.publicKey, "decrypt"))
+
+        // Verify Meta
+        XCTAssertEqual(idcard.meta["name"], "Alice")
+    }
+
+    func testIDCardEd25519Minimal() throws {
+        let chloe = try TestKeys.getChloe()
+
+        let idcard = try IDCard.load(TestVectors.idcardEd25519Minimal)
+
+        // Verify key purpose
+        XCTAssertNoThrow(try idcard.testKeyPurpose(chloe.publicKey, "sign"))
+    }
+
+    func testIDCardWithExpiry() throws {
+        let idcard = try IDCard.load(TestVectors.idcardWithExpiry)
+
+        // Verify SubKey has expiration
+        XCTAssertEqual(idcard.subKeys.count, 1)
+        XCTAssertNotNil(idcard.subKeys[0].expires)
+    }
+
+    func testIDCardMultiplePurposes() throws {
+        let alice = try TestKeys.getAlice()
+
+        let idcard = try IDCard.load(TestVectors.idcardMultiplePurposes)
+
+        // Verify key has both purposes
+        XCTAssertNoThrow(try idcard.testKeyPurpose(alice.publicKey, "sign"))
+        XCTAssertNoThrow(try idcard.testKeyPurpose(alice.publicKey, "decrypt"))
+    }
 }
 
 /// Basic bottle functionality tests
