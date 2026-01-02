@@ -12,10 +12,10 @@ Pod::Spec.new do |s|
     - IDCard identity management with purpose-specific subkeys
   DESC
 
-  s.homepage     = 'https://github.com/KarpelesLab/swiftbottle'
+  s.homepage     = 'https://github.com/BottleFmt/swiftbottle'
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
   s.author       = { 'Karpeles Lab Inc' => 'info@karpeleslabs.com' }
-  s.source       = { :git => 'https://github.com/KarpelesLab/swiftbottle.git', :tag => s.version.to_s }
+  s.source       = { :git => 'https://github.com/BottleFmt/swiftbottle.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '14.0'
   s.osx.deployment_target = '11.0'
